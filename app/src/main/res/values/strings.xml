@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Sudoku Solver</string>
+    <string name="solve_puzzle">Solve Puzzle</string>
+    <string name="clear_cell">Clear Cell</string>
+    <string name="enter_puzzle">Enter the given puzzle:</string>
+    <string name="chose_exposure">Expose a number, row, column, 9-cell, or everything:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

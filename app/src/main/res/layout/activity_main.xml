@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:weightSum="12"
+    tools:context="com.johnteckemeyer.sudokusolver.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:gravity="center">
+
+        <GridView
+        android:id="@+id/gridView"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:horizontalSpacing="0dp"
+        android:numColumns="9"
+        android:verticalSpacing="2dp" />
+
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="4" >
+
+        <TextView
+            android:text="@string/enter_puzzle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/enterThePuzzleTextView" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <Button
+                android:id="@+id/button1"
+                android:tag="1"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                style="@style/InputButton"
+                android:text="1" />
+
+            <Button
+                android:id="@+id/button2"
+                android:tag="2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                style="@style/InputButton"
+                android:layout_weight="1"
+                android:text="2" />
+
+            <Button
+                android:id="@+id/button3"
+                android:tag="3"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                style="@style/InputButton"
+                android:layout_weight="1"
+                android:text="3" />
+
+            <Button
+                android:id="@+id/button4"
+                android:tag="4"
+                style="@style/InputButton"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:text="4" />
+
+            <Button
+                android:id="@+id/button5"
+                android:tag="5"
+                style="@style/InputButton"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:text="5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/button6"
+                android:tag="6"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                style="@style/InputButton"
+                android:text="6" />
+
+            <Button
+                android:id="@+id/button7"
+                android:tag="7"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                style="@style/InputButton"
+                android:layout_weight="1"
+                android:text="7" />
+
+            <Button
+                android:id="@+id/button8"
+                android:tag="8"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                style="@style/InputButton"
+                android:layout_weight="1"
+                android:text="8" />
+
+            <Button
+                android:id="@+id/button9"
+                android:tag="9"
+                style="@style/InputButton"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:text="9" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
+
+                <Button
+                    android:id="@+id/buttonClear"
+                    android:tag="clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    style="@style/EraseCellButton"
+                    android:text="@string/clear_cell" />
+
+                <Button
+                    android:id="@+id/buttonSolve"
+                    android:tag="solve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    style="@style/CreatePuzzleButton"
+                    android:layout_weight="1"
+                    android:text="@string/solve_puzzle" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
