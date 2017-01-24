@@ -10,8 +10,9 @@ import android.widget.ImageButton;
 
 public class ExposeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    String [][] solutionGrid;
-    String [][] inputGrid;
+    private String [][] solutionGrid;
+    private String [][] inputGrid;
+    private int exposeState;
 
     private GridView gridView;
     private GridAdapter adapter;
@@ -66,6 +67,8 @@ public class ExposeActivity extends AppCompatActivity implements View.OnClickLis
         solutionGrid = SudokuGrid.getInstance().getGrid();
         inputGrid = UserInputGrid.getInstance().getGrid();
 
+        exposeState = -1;
+
         adapter = new GridAdapter(getApplicationContext());
 
         gridView.setAdapter(adapter);
@@ -74,18 +77,39 @@ public class ExposeActivity extends AppCompatActivity implements View.OnClickLis
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /*adapter.setNumber(i, selectedNumber);
 
-                adapter.notifyDataSetChanged();
+                if (exposeState == 0) {
+                    int row = i / 9;
+                    int rowPos = row * 9;
 
-                checkCellValidity(i);
+                    for (int j = rowPos; j < rowPos + 9; j++) {
+                        if (row == 0) {
+                            adapter.setNumber (j, Integer.parseInt(solutionGrid[row][j]));
+                        } else {
+                            adapter.setNumber(j, Integer.parseInt(solutionGrid[row][j % rowPos]));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
 
-                if (!boardIsGood) {
-                    buttonSolve.setEnabled(false);
-                } else {
-                    buttonSolve.setEnabled(true);
-                } */
+                } else if (exposeState == 1) {
+                    int col = i % 9;
 
+                    for (int j = 0; j < 9; j++) {
+                        adapter.setNumber(j * 9 + col, Integer.parseInt(solutionGrid[j][col]));
+                    }
+                    adapter.notifyDataSetChanged();
+
+                } else if (exposeState == 2) {
+                    int colOffset = (i / 9) / 3;
+                    int rowOffset = (i % 9) / 3;
+
+                    for (int j = 0; j < 3; j++) {
+                        for (int k = 0; k < 3; k++) {
+                            adapter.setNumber (((colOffset * 3 + j) * 9) + (rowOffset * 3 + k), Integer.parseInt(solutionGrid[colOffset * 3 + j][rowOffset * 3 + k]));
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -111,39 +135,48 @@ public class ExposeActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getTag().toString()) {
             case "1":
                 exposeNumber("1");
+                exposeState = -1;
                 break;
             case "2":
                 exposeNumber("2");
+                exposeState = -1;
                 break;
             case "3":
                 exposeNumber("3");
+                exposeState = -1;
                 break;
             case "4":
                 exposeNumber("4");
+                exposeState = -1;
                 break;
             case "5":
                 exposeNumber("5");
+                exposeState = -1;
                 break;
             case "6":
                 exposeNumber("6");
+                exposeState = -1;
                 break;
             case "7":
                 exposeNumber("7");
+                exposeState = -1;
                 break;
             case "8":
                 exposeNumber("8");
+                exposeState = -1;
                 break;
             case "9":
                 exposeNumber("9");
+                exposeState = -1;
                 break;
             case "row":
-                // TODO
+                exposeState = 0;
                 break;
             case "column":
-                // TODO
+                exposeState = 1;
                 break;
             case "nineCell":
-                // TODO
+                exposeState = 2;
                 break;
             case "all":
                 exposeAll ();
