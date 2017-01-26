@@ -10,16 +10,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by jptec on 1/18/2017.
  */
 
 public class GridAdapter extends BaseAdapter {
 
-    ArrayList<String> mItems;
-    ArrayList<Boolean> mIsGoodInput;
-    Context mContext;
-    int [] gridAccentCells; // Holds the location of alternating 9-cell grid clusters
+    private ArrayList<String> mItems;
+    private ArrayList<Boolean> mIsGoodInput;
+    private Context mContext;
+    private int [] gridAccentCells; // Holds the location of alternating 9-cell grid clusters
 
     public GridAdapter(Context context) {
         mItems = new ArrayList<>();
@@ -31,6 +31,11 @@ public class GridAdapter extends BaseAdapter {
     public void addCell(String number) {
         mItems.add(number);
         mIsGoodInput.add(true);
+    }
+
+    public void deleteGrid () {
+        mItems.clear();
+        mIsGoodInput.clear();
     }
 
     public void setNumber(int position, int value) {
@@ -57,6 +62,10 @@ public class GridAdapter extends BaseAdapter {
 
     public void setGood (int position) {
         mIsGoodInput.set(position, true);
+    }
+
+    public boolean isGoodCell (int position) {
+        return mIsGoodInput.get(position);
     }
 
     @Override

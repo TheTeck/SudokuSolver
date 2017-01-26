@@ -4,7 +4,5 @@
     <string name="clear_cell">Clear Cell</string>
     <string name="enter_puzzle">Enter the given puzzle:</string>
     <string name="chose_exposure">Expose a number, row, column, 9-cell, or everything:</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_grid">New Grid</string>
 </resources>

@@ -3,7 +3,8 @@ package com.johnteckemeyer.sudokusolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String[][] sudokuGrid;
     private boolean isGoodInput;
     private boolean boardIsGood;
+    private String[][] userInputGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonClear.setOnClickListener(this);
         buttonSolve.setOnClickListener(this);
 
+        userInputGrid = UserInputGrid.getInstance().getGrid();
+
         adapter = new GridAdapter(getApplicationContext());
 
         gridView.setAdapter(adapter);
@@ -75,11 +79,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String oldInput = adapter.getItem(i); // In case there is already a bad value in this cell
+
                 adapter.setNumber(i, selectedNumber);
 
                 adapter.notifyDataSetChanged();
 
-                checkCellValidity(i);
+                if (adapter.isGoodCell(i)) {    // Cell is clear or has already has a valid value
+                    checkCellValidity(i, selectedNumber);
+                } else {    // Cell already has an invalid value
+
+                    checkCellValidity(i, selectedNumber);
+
+                    for (int j = 0; j < 9; j++) { // Check for any cells that were invalid in the row and column
+                        if (sudokuGrid[i / 9][j].equals(oldInput)) {
+                            checkCellValidity((i / 9) * 9 + j, Integer.parseInt(oldInput));
+                        }
+                        if (sudokuGrid[j][i % 9].equals(oldInput)) {
+                            checkCellValidity(j * 9 + (i % 9), Integer.parseInt(oldInput));
+                        }
+                    }
+                    for (int j = 0; j < 3; j++) { // Check for any cells that were invalid in the same 9-cell
+                        for (int k = 0; k < 3; k++) {
+
+                            int x = ((i % 9) / 3) * 3 + k;
+                            int y = ((i / 9) / 3) * 3 + j;
+
+                            if (sudokuGrid[y][x].equals(oldInput)) {
+                                checkCellValidity(y * 9 + x, Integer.parseInt(oldInput));
+                            }
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged();
+                }
 
                 if (!boardIsGood) {
                     buttonSolve.setEnabled(false);
@@ -92,8 +126,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setUpGrid();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.newGridMenuItem) {
+            adapter.deleteGrid();
+            setUpGrid();
+            adapter.notifyDataSetChanged();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     
-    public void checkCellValidity (int position) {
+    public void checkCellValidity (int position, int cellValue) {
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -110,22 +165,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Check all the cells in the same row and column for any with the same number
         for (int i = 0; i < 9; i++) {
 
-            if (sudokuGrid[i][jPos] == String.valueOf(selectedNumber) && (i * 9 + jPos) != position) {
+            if (sudokuGrid[i][jPos].equals(String.valueOf(cellValue)) && (i * 9 + jPos) != position) {
                 isGoodInput = false;
                 adapter.setBad(i * 9 + jPos);
-            } else {
-
             }
 
-            if (sudokuGrid[iPos][i] == String.valueOf(selectedNumber) && (iPos * 9 + i) != position) {
+            if (sudokuGrid[iPos][i].equals(String.valueOf(cellValue)) && (iPos * 9 + i) != position) {
                 isGoodInput = false;
                 adapter.setBad(iPos * 9 + i);
             }
         }
 
+        // Check all the cells in the same 9-cell square for any with the same number
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (sudokuGrid[iBoxOffset + i][jBoxOffset + j] == String.valueOf(selectedNumber)
+                if (sudokuGrid[iBoxOffset + i][jBoxOffset + j].equals(String.valueOf(cellValue))
                         && (((iBoxOffset + i) * 9) + (jBoxOffset + j)) != position) {
                     isGoodInput = false;
                     adapter.setBad(((iBoxOffset + i) * 9) + (jBoxOffset + j));
@@ -153,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 sudokuGrid[i][j] = "";
+                userInputGrid[i][j] = "";
                 adapter.addCell("");
             }
         }
@@ -209,43 +264,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             temp.add(adapter.getItem(i));
         }
 
-        if (temp == null) {
-            Log.i("Info", "ArrayList is empty");
-        } else {
+        int[][] array = new int[9][9];
 
-            String[][] userInputGrid = UserInputGrid.getInstance().getGrid();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (temp.get(i * 9 + j).equals("")) {
+                    array[i][j] = 0;
+                } else {
+                    userInputGrid[i][j] = temp.get(i * 9 + j);
+                    array[i][j] = Integer.parseInt(temp.get(i * 9 + j));
+                }
+            }
+        }
 
-            int [][] array = new int [9][9];
+        Sudoku sudokuPuzzle = new Sudoku(array);
+        sudokuPuzzle.solvePuzzle();
 
+        array = sudokuPuzzle.getSolution();
+
+        if (array != null) {
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
-                    if (temp.get(i * 9 + j) == "") {
-                        array[i][j] = 0;
-                    } else {
-                        userInputGrid[i][j] = temp.get(i * 9 + j);
-                        array[i][j] = Integer.parseInt(temp.get(i * 9 + j));
-                    }
+                    sudokuGrid[i][j] = String.valueOf(array[i][j]);
                 }
             }
-
-            Sudoku sudokuPuzzle = new Sudoku(array);
-            sudokuPuzzle.solvePuzzle();
-
-            array = sudokuPuzzle.getSolution();
-
-            if (array != null) {
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 9; j++) {
-                        sudokuGrid[i][j] = String.valueOf(array[i][j]);
-                    }
-                }
-            }
-
-            Toast.makeText(this, "Puzzle Solved", Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(getApplicationContext(), ExposeActivity.class);
-
-            startActivity(intent);
         }
+
+        Toast.makeText(this, "Puzzle Solved", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(getApplicationContext(), ExposeActivity.class);
+
+        startActivity(intent);
     }
 }
